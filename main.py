@@ -1,6 +1,11 @@
+import sys
+import os
 
-from Ejercicio5.Client import Client
-from Ejercicio5.Facade import Facade
+# Agregar la carpeta facade_pattern a sys.path
+sys.path.append(os.path.join(os.path.dirname(__file__), 'Ejercicio5'))
+
+from Client import Client
+from Facade import Facade
 
 
 if __name__ == "__main__":
