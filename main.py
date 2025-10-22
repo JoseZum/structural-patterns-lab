@@ -84,63 +84,41 @@ if __name__ == "__main__":
         print(f"[Main] Error esperado: {e}")
 
     # EJERCICIO 7 --------------------------------------------------------
-    print("Ejercicio 7: Sistema de música con Flyweight")
-  
-
-    # Instanciar Factory (pool/flyweights)
+    print("\n--- Ejercicio 7: Sistema de música con Flyweight ---")
+    
+    # Instanciar Factory 
     factory = SeccionFactory()
 
-    print("\nCreando secciones ")
-    intro_pop     = factory.get_seccion("Intro Pop",       "audio/intro_pop.mp3", 15)
-    verso_std     = factory.get_seccion("Verso Estándar",  "audio/verso1.mp3",    30)
-    coro_energico = factory.get_seccion("Coro Enérgico",   "audio/coro1.mp3",     45)
-    puente_melo   = factory.get_seccion("Puente Melódico", "audio/puente.mp3",    20)
+    # Crear secciones compartidas
+    intro = factory.get_seccion("Intro", "audio/intro.mp3", 15)
+    verso = factory.get_seccion("Verso", "audio/verso.mp3", 30)
+    coro = factory.get_seccion("Coro", "audio/coro.mp3", 40)
 
-    print("\nCreando canciones")
-
-    # Canción 1: Original
+    # Canción 1: usa las secciones múltiples veces
     cancion1 = Cancion("Summer Vibes", "The Waves", "Original")
-    cancion1.agregar_seccion(intro_pop)
-    cancion1.agregar_seccion(verso_std)
-    cancion1.agregar_seccion(coro_energico)
-    cancion1.agregar_seccion(verso_std)     
-    cancion1.agregar_seccion(coro_energico)  
-    cancion1.agregar_seccion(puente_melo)
-    cancion1.agregar_seccion(coro_energico)
+    cancion1.agregar_seccion(intro)
+    cancion1.agregar_seccion(verso)
+    cancion1.agregar_seccion(coro)
+    cancion1.agregar_seccion(verso)  
+    cancion1.agregar_seccion(coro)   
 
-    # Canción 2: reutiliza el flyweight
-    cancion2 = Cancion("Summer Vibes", "The Waves", "Acústica")
-    cancion2.agregar_seccion(factory.get_seccion("Intro Pop",      "audio/intro_pop.mp3", 15))
-    cancion2.agregar_seccion(factory.get_seccion("Verso Estándar", "audio/verso1.mp3",    30))
-    cancion2.agregar_seccion(factory.get_seccion("Coro Enérgico",  "audio/coro1.mp3",     45))
+    # Reutiliza las mismas secciones (flyweights)
+    cancion2 = Cancion("Ocean Dreams", "The Waves", "Remix")
+    cancion2.agregar_seccion(factory.get_seccion("Intro", "audio/intro.mp3", 15))  
+    cancion2.agregar_seccion(factory.get_seccion("Coro", "audio/coro.mp3", 40))    
 
-    # Canción 3> nueva cancion
-    cancion3 = Cancion("Ocean Dreams", "The Waves", "Original")
-    cancion3.agregar_seccion(factory.get_seccion("Intro Pop",       "audio/intro_pop.mp3", 15))
-    cancion3.agregar_seccion(factory.get_seccion("Verso Estándar",  "audio/verso1.mp3",    30))
-    cancion3.agregar_seccion(factory.get_seccion("Puente Melódico", "audio/puente.mp3",    20))
+    # Crear playlist y reproducir
+    playlist = Playlist("Mi Playlist")
+    playlist.agregar_cancion(cancion1)
+    playlist.agregar_cancion(cancion2)
+    playlist.listar()
+    playlist.reproducir()
 
-    print("\nCreando playlists")
-    playlist1 = Playlist("Favoritas")
-    playlist1.agregar_cancion(cancion1)
-    playlist1.agregar_cancion(cancion3)
-
-    playlist2 = Playlist("Ejercicio")
-    playlist2.agregar_cancion(cancion1)
-    playlist2.agregar_cancion(cancion2)
-
-    # Listar y reproducir
-    playlist1.listar()
-    playlist2.listar()
-    playlist1.reproducir()
-
-    # Demostración rápida de reutilización por nombre (misma clave -> mismo flyweight)
-    print("\nReutilización por nombre")
-    a = factory.get_seccion("Coro Enérgico", "audio/coro1.mp3", 45)   
-    b = factory.get_seccion("Coro Enérgico", "audio/otro.mp3",  60)   
-    print("   ¿a es b?", a is b)
-
-    # Estadísticas unicamente demostrar patron
-    print(f"\n{'='*60}")
-    print("Estadisticas")
-    print("   " + factory.get_estadisticas())
+    # Demostrar reutilización al mostrar que mismo nombre = mismo objeto
+    print("\n[flyweight] Comprobando reutilización:")
+    a = factory.get_seccion("Coro", "audio/coro.mp3", 40)
+    b = factory.get_seccion("Coro", "audio/otro.mp3", 60)
+    print(f"¿Los objetos 'Coro' son el mismo? {a is b}")
+    
+    # Estadísticas
+    print(f"\n{factory.get_estadisticas()}")
